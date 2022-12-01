@@ -44,10 +44,8 @@ public final class LambdaFilter extends JFrame {
         LOWERCASE("Convert to lowercase", s -> s.toLowerCase()),
         COUNTCHARS("Count the number of chars", s -> Integer.toString(s.length())),
         COUNTLINES("Count the number of lines", s -> Long.toString(s.lines().count())),
-        LISTSORTEDWORDS("List all the words in alphabetical order",
-                s -> wordsStream(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse("")),
-        WORDSCOUNT("Write the count for each word",
-                s -> countWords(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse(""));
+        LISTSORTEDWORDS("List all the words in alphabetical order", s -> reduceStringStream(wordsStream(s).sorted())),
+        WORDSCOUNT("Write the count for each word", s -> reduceStringStream(countWords(s).sorted()));
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -77,6 +75,12 @@ public final class LambdaFilter extends JFrame {
                     .entrySet()
                     .stream()
                     .map(e -> e.getKey() + " -> " + e.getValue());
+        }
+
+        private static String reduceStringStream(final Stream<String> stream) {
+            return stream
+                    .reduce((s0, s1) -> s0 + "\n" + s1)
+                    .orElse("");
         }
     }
 
