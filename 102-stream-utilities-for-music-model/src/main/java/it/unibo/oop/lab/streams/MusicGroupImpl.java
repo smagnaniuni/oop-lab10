@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 /**
@@ -84,7 +85,21 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Optional<String> longestAlbum() {
-        return null;
+        return this.albums.keySet().stream()
+                .max((a0, a1) -> Double.compare(this.albumDuration(a0), this.albumDuration(a1)));
+    }
+
+    private DoubleStream albumDurationStream(final String albumName) {
+        return this.songs.stream()
+                .filter(s -> {
+                    return s.getAlbumName().isPresent() ? s.getAlbumName().get().equals(albumName) : false;
+                })
+                .mapToDouble(Song::getDuration);
+    }
+
+    private double albumDuration(final String albumName) {
+        return this.albumDurationStream(albumName)
+                .sum();
     }
 
     private static final class Song {
