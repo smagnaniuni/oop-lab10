@@ -64,12 +64,7 @@ public final class LambdaUtilities {
          */
         final List<Optional<T>> l = new ArrayList<>();
         list.forEach(e -> {
-            // if(pre.test(e)) {
-            //     l.add(Optional.ofNullable(e));
-            // } else {
-            //     l.add(Optional.empty());
-            // }
-            l.add(pre.test(e) ? Optional.ofNullable(e) : Optional.empty());
+            l.add(Optional.ofNullable(e).filter(pre));
         });
         return l;
     }
