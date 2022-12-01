@@ -45,7 +45,9 @@ public final class LambdaFilter extends JFrame {
         COUNTCHARS("Count the number of chars", s -> Integer.toString(s.length())),
         COUNTLINES("Count the number of lines", s -> Long.toString(s.lines().count())),
         LISTSORTEDWORDS("List all the words in alphabetical order",
-                s -> wordsStream(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse(""));
+                s -> wordsStream(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse("")),
+        WORDSCOUNT("Write the count for each word",
+                s -> countWords(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse(""));
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -67,6 +69,14 @@ public final class LambdaFilter extends JFrame {
         private static Stream<String> wordsStream(final String text) {
             return text.lines()
                     .flatMap(l -> Stream.of(l.split(" ")));
+        }
+
+        private static Stream<String> countWords(final String text) {
+            return wordsStream(text)
+                    .collect(Collectors.groupingBy(w -> w, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .map(e -> e.getKey() + " -> " + e.getValue());
         }
     }
 
