@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -41,7 +43,9 @@ public final class LambdaFilter extends JFrame {
         IDENTITY("No modifications", Function.identity()),
         LOWERCASE("Convert to lowercase", s -> s.toLowerCase()),
         COUNTCHARS("Count the number of chars", s -> Integer.toString(s.length())),
-        COUNTLINES("Count the number of lines", s -> Long.toString(s.lines().count()));
+        COUNTLINES("Count the number of lines", s -> Long.toString(s.lines().count())),
+        LISTSORTEDWORDS("List all the words in alphabetical order",
+                s -> wordsStream(s).sorted().reduce((s0, s1) -> s0 + "\n" + s1).orElse(""));
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -58,6 +62,11 @@ public final class LambdaFilter extends JFrame {
 
         public String translate(final String s) {
             return fun.apply(s);
+        }
+
+        private static Stream<String> wordsStream(final String text) {
+            return text.lines()
+                    .flatMap(l -> Stream.of(l.split(" ")));
         }
     }
 
