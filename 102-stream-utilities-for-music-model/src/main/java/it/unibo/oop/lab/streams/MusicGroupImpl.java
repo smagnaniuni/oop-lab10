@@ -88,7 +88,7 @@ public final class MusicGroupImpl implements MusicGroup {
     private DoubleStream albumDurationStream(final String albumName) {
         return this.songs.stream()
                 .filter(s -> {
-                    return s.getAlbumName().isPresent() ? s.getAlbumName().get().equals(albumName) : false;
+                    return s.getAlbumName().orElse("").equals(albumName);
                 })
                 .mapToDouble(Song::getDuration);
     }
